@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
             {
                 if (location.x == 1 && location.y == 0) { return new int2(1, 1); }
                 if (location.x == 1 && location.y == 1 && btmele.IsEngaged) { return new int2(1, 0); }
-                if (location.x == 2 && location.y == 1) { if (!ladder.IsEngaged) { health -= 10; } return new int2(2, 2); }
+                if (location.x == 2 && location.y == 1) { if (!ladder.IsEngaged) { Health -= 5; } return new int2(2, 2); }
                 if (location.x == 2 && location.y == 2) { return new int2(2, 1); }
             }
             else
