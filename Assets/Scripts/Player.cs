@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     public Animator Animator { get; private set; }
     [SerializeField] TextMeshProUGUI hpBar;
     [SerializeField] ButtonSlot  btmele, ladder;
+    [SerializeField] AudioClip fallingDownStairs;
+    bool isFalling = false;
     Room[,] rooms = new Room[,]
     {
         {new Room(RoomType.Normal, new Vector2(-3,2.3f)),new Room(RoomType.Normal, new Vector2(-3,0)) , new Room(RoomType.Normal, new Vector2(-3,-4.08f)) },
@@ -25,7 +27,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Animator = GetComponent<Animator>();
+        Animator = GetComponentInChildren<Animator>();
         
     }
 
@@ -52,19 +54,28 @@ public class Player : MonoBehaviour
                 if((Vector2)transform.position == rooms[destination.x, destination.y].position) { break; }
                 Vector2 dest = rooms[destination.x, destination.y].position;
                 var newPos = Vector2.MoveTowards(transform.position, dest, 0.1f);
-                /*
+                
                 if (transform.position.x - newPos.x != math.abs(transform.position.x - newPos.x))
-                    { transform.localScale = new Vector3(-math.abs(transform.localScale.x), transform.localScale.y, transform.localScale.z); }
+                    { Animator.gameObject.transform.localScale = 
+                            new Vector3(math.abs(Animator.gameObject.transform.localScale.x), Animator.gameObject.transform.localScale.y, Animator.gameObject.transform.localScale.z); }
                 else
-                    { transform.localScale = new Vector3(math.abs(transform.localScale.x), transform.localScale.y, transform.localScale.z); }
-                */
+                    {
+                    Animator.gameObject.transform.localScale = new Vector3(-math.abs(Animator.gameObject.transform.localScale.x),
+                            Animator.gameObject.transform.localScale.y, Animator.gameObject.transform.localScale.z); }
+                
                 transform.position = newPos;
                 yield return new WaitForSeconds(0.05f);
             } 
             Animator.SetBool("IsWalking", false);
             room = destination;
+           
         }
-
+        if (isFalling)
+        {
+            Health -= 5;
+            isFalling = false;
+            AudioSource.PlayClipAtPoint(fallingDownStairs, transform.position,2);
+        }
         yield return new WaitForSeconds(3);
         moveOn = true;
     }
@@ -80,7 +91,7 @@ public class Player : MonoBehaviour
             {
                 if (location.x == 1 && location.y == 0) { return new int2(1, 1); }
                 if (location.x == 1 && location.y == 1 && btmele.IsEngaged) { return new int2(1, 0); }
-                if (location.x == 2 && location.y == 1) { if (!ladder.IsEngaged) { Health -= 5; } return new int2(2, 2); }
+                if (location.x == 2 && location.y == 1) { if (!ladder.IsEngaged) { isFalling = true; } return new int2(2, 2); }
                 if (location.x == 2 && location.y == 2) { return new int2(2, 1); }
             }
             else

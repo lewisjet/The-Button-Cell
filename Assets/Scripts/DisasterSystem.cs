@@ -17,6 +17,8 @@ public class DisasterSystem : MonoBehaviour
     float sttl;
     private void Start()
     {
+        timeLeft = PlayerPrefs.GetInt("time");
+        if(timeLeft == 0) { timeLeft = 120; }
         quartermark = timeLeft * 0.25f;
         sttl = timeLeft;
     }

@@ -6,7 +6,8 @@ public class Clouds : MonoBehaviour
 {
     [SerializeField] ParticleSystem particleSystemForClouds;
     [SerializeField] ButtonSlot bs;
-
+    [SerializeField] AudioClip wind;
+    
     // Update is called once per frame
     void Update()
     {
@@ -16,7 +17,11 @@ public class Clouds : MonoBehaviour
             StopAllCoroutines();
         }
     }
-    public void Invoke() => particleSystemForClouds.gameObject.SetActive(true);
+    public void Invoke()
+    {
+        particleSystemForClouds.gameObject.SetActive(true);
+        AudioSource.PlayClipAtPoint(wind, transform.position, 1);
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

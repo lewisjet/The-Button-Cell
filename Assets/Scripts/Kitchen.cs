@@ -7,17 +7,28 @@ public class Kitchen : MonoBehaviour
     [SerializeField] ParticleSystem particles;
     [SerializeField] int damage = 100;
     [SerializeField] float destructionTime = 3f;
+    [SerializeField] float time = 1f;
     [SerializeField] ButtonSlot bs;
     [SerializeField] ParticleSystem sprinkler;
+    float remaining;
+    private void Start()
+    {
+        remaining = time;
+    }
 
     // Update is called once per frame
     void Update()
     {
         if(bs.IsEngaged)
         {
+            remaining -= Time.deltaTime;
             sprinkler.gameObject.SetActive(true);
-            particles.gameObject.SetActive(false);
-            StopAllCoroutines();
+            if (remaining <= 0)
+            {
+                remaining = time;
+                particles.gameObject.SetActive(false);
+                StopAllCoroutines();
+            }
         }
         else
         {
